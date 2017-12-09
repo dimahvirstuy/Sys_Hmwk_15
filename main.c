@@ -26,8 +26,24 @@ union semun {
 int main(){
   int desc = semget(KEY, SIZE, IPC_CREAT | IPC_EXCL );
   struct sembuf buf;
-  sembuf.sem_num = 0;
-  sembuf.sem_op = -1;
-  sembuf.sem_flag = SEM_UNDO;
-  semop(desc, buf, 1);
+  buf.sem_num = 0;
+  buf.sem_op = -1;
+  buf.sem_flg = SEM_UNDO;
+  semop(desc, &buf , 1);
+  int mem = shmget(KEY, SIZE, 0600);
+  printf("Last entry: %s\n", mem);
+  shmdt(mem);
+  printf("Input a new line!\n");
+  char* newline;
+  fgets(newline, sizeof(newline), STDIN);
+  char*shm;
+  char* s;
+  shm = shmat(mem, 0, 0);
+  s = shm;
+  *s = newline;
+  FILE *f = fopen("file", "w");
+  fprintf("%s\n", newline);
+  fclose(f);
+  
+  
 }
