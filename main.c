@@ -34,16 +34,14 @@ int main(){
   printf("Last entry: %s\n", mem);
   shmdt(mem);
   printf("Input a new line!\n");
-  char* newline;
-  fgets(newline, sizeof(newline), STDIN);
-  char*shm;
-  char* s;
-  shm = shmat(mem, 0, 0);
-  s = shm;
-  *s = newline;
-  FILE *f = fopen("file", "w");
-  fprintf("%s\n", newline);
-  fclose(f);
-  
+  char newline[SIZE];
+  fgets(newline, sizeof(newline), stdin);
+  fd = open("file" , O_WRONLY | O_APPEND, 0644); 
+  write(fd, newline, SIZE);
+  close(fd);
+  strncpy(mem, newline, SIZE);
+  buf.semop = 1;
+  semop(sem_id, &sbuf, 1);
+  return 0;
   
 }
